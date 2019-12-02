@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta property="og:locale" content="es_ES" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
+
+    <title>Generador</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<style>
+.flex-form {
+	 display: flex;
+	 justify-content: space-between;
+	 flex-wrap: wrap;
+}
+ .morePhone {
+	 border: 2px dashed #fff;
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+	 padding: 2px;
+	 width: 100%;
+	 margin-bottom: 30px;
+	 background-color: transparent;
+	 transition: background-color 0.2s linear;
+	 cursor: pointer;
+}
+ .morePhone span {
+	 color: #fff;
+	 margin-right: 5px;
+}
+ .morePhone:hover {
+	 background-color: #ddd;
+}
+ .morePhone:hover span {
+	 color: #333;
+}
+ .morePhone:hover svg {
+	 fill: #333;
+}
+ .morePhone svg {
+	 fill: #fff;
+	 width: 20px;
+	 height: 20px;
+}
+ .main-headline {
+	 text-align: center;
+	 font-size: 30px;
+	 margin-bottom: 20px;
+	 font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
+	 color: #888;
+}
+ .form-group {
+	 width: 100%;
+}
+ .form-group label {
+	 color: #fff;
+	 font-weight: bold;
+}
+ .form-group.new .flex-input {
+	 display: flex;
+}
+ .form-group.new .cap {
+	 width: 30px;
+	 padding: 5px;
+}
+ .form-group.new .number {
+	 width: calc(100% - 30px);
+}
+ .logo {
+	 display: block;
+	 width: 100%;
+	 margin-bottom: 50px;
+}
+ .logo img {
+	 width: 100%;
+}
+ .btn-primary {
+	 background-color: #4caf50;
+	 border: none;
+	 opacity: 0.8;
+	 transition: opacity 0.2s linear;
+	 width: 300px;
+	 position: fixed;
+	 left: 0px;
+	 bottom: 0px;
+	 height: 50px;
+	 font-weight: bold;
+}
+ .btn-primary:hover {
+	 opacity: 1;
+	 background-color: #4caf50;
+}
+ .btn-primary:focus {
+	 opacity: 1;
+	 background-color: #4caf50;
+}
+ .container-fluid {
+	 background-color: #ddd;
+	 position: relative;
+}
+ .configuration {
+	 background-color: #333;
+	 width: 100%;
+	 max-width: 300px;
+	 height: 100vh;
+	 position: fixed;
+	 left: 0px;
+	 top: 0px;
+	 padding: 25px;
+	 overflow-y: scroll;
+}
+ .configuration .done {
+	 background-color: #4db6ac;
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+	 position: absolute;
+	 left: -100%;
+	 transition: left 0.2s linear;
+	 width: 100%;
+	 height: 100vh;
+	 top: 0px;
+}
+ .configuration .done h4 {
+	 text-align: center;
+	 padding: 10px;
+	 color: #fff;
+	 margin: 0px;
+}
+ .configuration .done svg {
+	 width: 60px;
+	 height: 60px;
+	 margin-left: 10px;
+	 fill: #fff;
+}
+ .configuration.active .done {
+	 left: 0px;
+	 transition: bottom 0.2s linear;
+}
+ .result {
+	 width: calc(100% - 300px);
+	 background-color: #fff;
+	 position: absolute;
+	 right: 0;
+	 top: 0;
+	 height: 100vh;
+	 display: flex;
+}
+ .result-box {
+	 width: 60%;
+	 height: 100vh;
+	 padding: 25px;
+
+}
+ .result-box .card {
+	 width: 90%;
+	 padding: 20px 30px;
+	 border-bottom: 5px solid #ddd;
+}
+ .result-codigo {
+	 height: 100vh;
+	 background-color: #333;
+	 width: 40%;
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+}
+ .result-codigo pre {
+	 width: 90%;
+	 height: 500px;
+	 background-color: #555;
+	 color: #fff;
+	 padding: 25px;
+}
+ .resultPic {
+	 width: 100%;
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+}
+ .resultPic img {
+	 height: 100%;
+}
+ 
+</style>
+  </head>
+
+
+  <body>
+    <div id="app">
+        <section class="container-fluid">
+            <aside v-bind:class="{ active: copiedCode }" class="configuration" ref="generador">
+              <span class="logo"><img src="https://madrid.impacthub.net/wp-content/uploads/2017/12/logo_ImpactHubMadrid-60px.svg" /></span>
+    
+              <form>
+                  <div class="form-group">
+                    <label for="logoSelect">Logo</label>
+                    <select v-model="datos.site" class="form-control" id="logoSelect">
+                      <option  v-for="(item, index) in mainLogo" v-bind:value="index">{{item.name}}</option>
+                    </select>
+                  </div>
+                <div class="form-group">
+                  <label for="nombreInput">Nombre</label>
+                  <input v-model="datos.nombre" type="text" class="form-control" id="Name" placeholder="Daenerys">
+                </div>
+    
+                 <div class="form-group">
+                  <label for="surNombreInput">Apellido</label>
+                  <input v-model="datos.apellido" type="text" class="form-control" id="Surname" placeholder="Targaryen">
+                </div>
+    
+                <div class="form-group">
+                  <label for="cargoInput">Cargo</label>
+                  <input v-model="datos.cargo" type="text" class="form-control" id="Cargo" placeholder="Mother of Dragons">
+                </div>
+
+                <div class="form-group">
+                    <div class="flex-form">
+                    <label for="movilInput">Móvil</label>
+                    <div>
+                        <input v-model="datos.showMobile" class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                          <label class="form-check-label" for="defaultCheck1">
+                            visible
+                        </label>  
+                      </div>
+                    </div>
+                    <input v-model="datos.movil" type="text" class="form-control" id="Movil" placeholder="(+00)">
+                  </div>
+
+                  <div class="form-group">
+                      <label for="headlineSelect">Headline</label>
+                      <select v-model="datos.color" class="form-control" id="headlineSelect">
+                          <option  v-for="(item, index) in headlines" v-bind:value="index">{{item.name}}</option>
+                 
+                      </select>
+                    </div>
+    
+                <!--<div class="form-group">
+                  <label for="emailInput">Email</label>
+                  <input v-model="datos.email" type="text" class="form-control" id="Email" placeholder="targaryen">
+                </div>-->
+    
+                
+    
+                <!--<div class="telephone">
+    
+                   <div v-for="item in datos.telefonos" class="form-group new">
+                      <div class="flex-form">
+                      <label for="telInput">Teléfonos</label>
+                       <div>
+                        <input v-model="item.showInput" class="form-check-input" type="checkbox" value="">
+                        <label class="form-check-label" for="defaultCheck2">
+                          visible
+                      </label>  
+                       </div>
+                      <div class="flex-input">
+                        <input v-model="item.capital" type="text" class="form-control cap">
+                        <input v-model="item.telefono" type="text" class="form-control number" id="Tel" placeholder="">
+                       
+                         </div>
+                      </div>
+                  </div>
+    
+                  <a v-on:click="addTelefono" class="morePhone"> 
+                    <span>añadir más teléfonos</span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                    </svg>
+                  </a>
+                </div>-->
+                
+                
+              
+               
+              </form>
+               <button data-clipboard-target="#firmabox" class="btn btn-primary">Copiar</button>
+               <div class="done">
+                 <h4> 
+                   <svg viewBox="0 0 24 24">
+                      <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                  </svg>
+                </h4>
+               </div>
+            </aside>
+          <div class="result">
+            <div class="result-box">
+              <div id="firmabox" ref="printMe">
+        
+                <!--card-->
+                <div ref="content" class="firma">
+                  <div style="font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:medium;letter-spacing:normal;color:rgb(51,51,51)">
+                    <h1 style="font-weight: bold;margin-bottom:0px;font-size:18px;letter-spacing:0.5px; color: #000"><span>{{datos.nombre}}</span> {{datos.apellido}}</h1>
+                  </div>
+                <div style="color:rgb(0,0,0);font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:medium;letter-spacing:normal">
+                  <h2 style="margin:0px 0px 5px;color:#000; font-size:17px; margin-top: 5px;">{{datos.cargo}}</h2>
+                </div>
+                
+                <div>
+                    <div v-if="datos.showMobile" style="color:rgb(0,0,0);font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; letter-spacing:normal;font-size:17px;margin-top:5px"><a v-bind:href="datos.movil" v-bind:title="datos.movil + ' • ' + datos.nombre + ' ' + datos.apellido + ' • Impact Hub'" style="color:#000" target="_blank">{{datos.movil}}</a></div>
+                    <div style="font-weight: bold; font-style: italic; font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; letter-spacing:normal;font-size:17px;margin-top:5px"><a v-bind:title="datos.headline" v-bind:style="{color: headlines[datos.color].color}" target="_blank">{{datos.headline}}</a></div>
+                
+                    <div style="color:rgb(0,0,0);font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; letter-spacing:normal;font-size:17px;margin-top:5px">
+               
+                  <a v-bind:href="mainLogo[datos.site].url" title="impacthub • Data-driven managed service solutions provider" style="font-weight: bold;color: #000" target="_blank">{{mainLogo[datos.site].web}}</a>
+                </div>
+    
+               
+               <div>
+                 <a style="display: inline-block;" href="https://twitter.com/impacthubmad">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.633,7.997c0.013,0.175,0.013,0.349,0.013,0.523c0,5.325-4.053,11.461-11.46,11.461c-2.282,0-4.402-0.661-6.186-1.809	c0.324,0.037,0.636,0.05,0.973,0.05c1.883,0,3.616-0.636,5.001-1.721c-1.771-0.037-3.255-1.197-3.767-2.793	c0.249,0.037,0.499,0.062,0.761,0.062c0.361,0,0.724-0.05,1.061-0.137c-1.847-0.374-3.23-1.995-3.23-3.953v-0.05	c0.537,0.299,1.16,0.486,1.82,0.511C3.534,9.419,2.823,8.184,2.823,6.787c0-0.748,0.199-1.434,0.548-2.032	c1.983,2.443,4.964,4.04,8.306,4.215c-0.062-0.3-0.1-0.611-0.1-0.923c0-2.22,1.796-4.028,4.028-4.028	c1.16,0,2.207,0.486,2.943,1.272c0.91-0.175,1.782-0.512,2.556-0.973c-0.299,0.935-0.936,1.721-1.771,2.22	c0.811-0.088,1.597-0.312,2.319-0.624C21.104,6.712,20.419,7.423,19.633,7.997z"/></svg>
+                </a>
+                 <a style="display: inline-block;" href="https://www.facebook.com/impacthubmadrid">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.397,20.997v-8.196h2.765l0.411-3.209h-3.176V7.548c0-0.926,0.258-1.56,1.587-1.56h1.684V3.127	C15.849,3.039,15.025,2.997,14.201,3c-2.444,0-4.122,1.492-4.122,4.231v2.355H7.332v3.209h2.753v8.202H13.397z"/></svg>
+                </a>
+                 <a style="display: inline-block;" href="https://www.linkedin.com/company/impacthubmadrid">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="4.983" cy="5.009" r="2.188"/><path d="M9.237 8.855v12.139h3.769v-6.003c0-1.584.298-3.118 2.262-3.118 1.937 0 1.961 1.811 1.961 3.218v5.904H21v-6.657c0-3.27-.704-5.783-4.526-5.783-1.835 0-3.065 1.007-3.568 1.96h-.051v-1.66H9.237zM3.095 8.855H6.87V20.994H3.095z"/></svg>
+                </a>
+                 <a style="display: inline-block;" href="https://www.instagram.com/impacthub/">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11.999,7.377c-2.554,0-4.623,2.07-4.623,4.623c0,2.554,2.069,4.624,4.623,4.624c2.552,0,4.623-2.07,4.623-4.624	C16.622,9.447,14.551,7.377,11.999,7.377L11.999,7.377z M11.999,15.004c-1.659,0-3.004-1.345-3.004-3.003	c0-1.659,1.345-3.003,3.004-3.003s3.002,1.344,3.002,3.003C15.001,13.659,13.658,15.004,11.999,15.004L11.999,15.004z"/><circle cx="16.806" cy="7.207" r="1.078"/><path d="M20.533,6.111c-0.469-1.209-1.424-2.165-2.633-2.632c-0.699-0.263-1.438-0.404-2.186-0.42	c-0.963-0.042-1.268-0.054-3.71-0.054s-2.755,0-3.71,0.054C7.548,3.074,6.809,3.215,6.11,3.479C4.9,3.946,3.945,4.902,3.477,6.111	c-0.263,0.7-0.404,1.438-0.419,2.186c-0.043,0.962-0.056,1.267-0.056,3.71c0,2.442,0,2.753,0.056,3.71	c0.015,0.748,0.156,1.486,0.419,2.187c0.469,1.208,1.424,2.164,2.634,2.632c0.696,0.272,1.435,0.426,2.185,0.45	c0.963,0.042,1.268,0.055,3.71,0.055s2.755,0,3.71-0.055c0.747-0.015,1.486-0.157,2.186-0.419c1.209-0.469,2.164-1.424,2.633-2.633	c0.263-0.7,0.404-1.438,0.419-2.186c0.043-0.962,0.056-1.267,0.056-3.71s0-2.753-0.056-3.71C20.941,7.57,20.801,6.819,20.533,6.111z M19.315,15.643c-0.007,0.576-0.111,1.147-0.311,1.688c-0.305,0.787-0.926,1.409-1.712,1.711c-0.535,0.199-1.099,0.303-1.67,0.311	c-0.95,0.044-1.218,0.055-3.654,0.055c-2.438,0-2.687,0-3.655-0.055c-0.569-0.007-1.135-0.112-1.669-0.311	c-0.789-0.301-1.414-0.923-1.719-1.711c-0.196-0.534-0.302-1.099-0.311-1.669c-0.043-0.95-0.053-1.218-0.053-3.654	c0-2.437,0-2.686,0.053-3.655c0.007-0.576,0.111-1.146,0.311-1.687c0.305-0.789,0.93-1.41,1.719-1.712	c0.534-0.198,1.1-0.303,1.669-0.311c0.951-0.043,1.218-0.055,3.655-0.055c2.437,0,2.687,0,3.654,0.055	c0.571,0.007,1.135,0.112,1.67,0.311c0.786,0.303,1.407,0.925,1.712,1.712c0.196,0.534,0.302,1.099,0.311,1.669	c0.043,0.951,0.054,1.218,0.054,3.655c0,2.436,0,2.698-0.043,3.654H19.315z"/></svg>
+                </a>
+               </div>
+               
+               
+                
+                </div>
+              </div>
+                <!--fin card-->
+                <div style="margin: 15px 0; color:rgb(0,0,0);font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; font-size:medium;letter-spacing:normal; margin-right: 15px">
+                  <div style="width: 220px"> 
+                  
+                        <img style="width: 100%" src="./logo.png" title="logo impact hub">
+
+                  </div>
+              </div>
+              </div>
+             
+            </div>
+          
+          </div>
+          
+        </div>
+      </section>
+    </div>
+    
+    
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js""></script>
+ 
+  <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+            output: null,
+            copiedCode: false,
+            htmlTXT: '',
+            mainLogo: {
+                wfg: {
+                name: 'Impact Hub',
+                web: 'madrid.impacthub.net',
+                url: 'https://madrid.impacthub.net'
+                }
+            },
+            headlines: {
+                mktcom: {
+                  name: 'MKT-COM',
+                  color: '#41bed0'
+                },
+                eventos: {
+                  name: 'EVENTOS',
+                  color: '#ee4f3f'
+                },
+                coworking: {
+                  name: 'COWORKING',
+                  color: '#f78a3c'
+                },
+                proyectos: {
+                  name: 'PROYECTOS',
+                  color: '#3da491'
+                },
+                directivos: {
+                  name: 'DIRECTIVOS',
+                  color: '#812926'
+                },
+                operaciones: {
+                  name: 'OPERACIONES',
+                  color: '#266887'
+                }
+            },
+            datos: {
+            nombre: 'Daenerys',
+            apellido: 'Targaryen',
+            cargo: 'Mother of Dragons',
+            email: 'targaryen',
+            movil: "+34 000 000 000",
+            color: "#000",
+            headline: "Where change goes to work",
+            showMobile: true,
+            telefonos: [
+            {
+                capital: 'T',
+                telefono: "+34 000 000 000",
+                showInput: true
+            }
+            ],
+            site: 'wfg',
+            color: 'mktcom'
+        }
+        },
+        watch: {
+    datos: {
+      handler: function (el) {
+        this.htmlTXT = this.$refs.content.innerHTML;
+       
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    console.log(this.datos.color)
+  },
+  methods: {
+    copiaCodigo: function (){
+      const _self = this;
+      _self.copiedCode = true
+      
+      navigator.clipboard.writeText(this.htmlTXT)
+      .then(() => {
+      	setTimeout(() => {
+          _self.copiedCode = false
+        }, 1500)
+      })
+    },
+    addTelefono: function () {
+      this.datos.telefonos.push({
+        capital: 'T',
+        telefono: "+34 000 000 000"
+      })
+    }
+    },
+    mounted(){
+      new ClipboardJS('.btn');
+      document.execCommand('copy');
+    }
+        })
+  </script>
+
+
+</html>
